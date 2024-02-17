@@ -27,6 +27,15 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 );
 
+        http
+                .formLogin((auth) -> auth.loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
+                .permitAll());
+
+        http.csrf((auth) -> auth.disable());
+
         return http.build();
     }
 
