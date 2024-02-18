@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class User {
 
     @Id
@@ -34,8 +35,5 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
-    }
-    public Long getId() {
-        return id;
     }
 }
