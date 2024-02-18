@@ -20,6 +20,10 @@ public class JoinService {
 
     @Transactional
     public Long joinMember(UserJoinDTO userJoinDTO) {
+        if(userRepository.existsByUserName(userJoinDTO.userName())){
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        }
+
         String encodePassword = bCryptPasswordEncoder.encode(userJoinDTO.password());
 
         UserJoinDTO joinDTO = new UserJoinDTO(userJoinDTO.userName(), encodePassword, userJoinDTO.email(), userJoinDTO.role());
