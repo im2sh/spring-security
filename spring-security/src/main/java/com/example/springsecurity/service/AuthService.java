@@ -1,11 +1,14 @@
 package com.example.springsecurity.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.Iterator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,4 +38,11 @@ public class AuthService {
         return auth.getAuthority();
     }
 
+    public Authentication getAuthentication(){
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, getAuthentication());
+    }
 }
