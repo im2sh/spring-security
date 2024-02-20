@@ -4,7 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -78,6 +81,30 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/"));
 
         return http.build();
+    }
+
+    /**
+     * InmemoryUserDetailsManager를 사용하여 사용자 정보를 메모리에 저장한다.
+     * 직접 생성한 User와 구분짓기 위해 org.springframework.security.core.userdetails의 경로를 명시
+     * @return
+     */
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+
+        UserDetails user1 = org.springframework.security.core.userdetails.User.builder()
+                .username("user1")
+                .password(bCryptPasswordEncoder().encode("1234"))
+                .roles("ADMIN")
+                .build();
+
+        UserDetails user2 = org.springframework.security.core.userdetails.User.builder()
+                .username("user2")
+                .password(bCryptPasswordEncoder().encode("1234"))
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(user1, user2);
     }
 
 }
