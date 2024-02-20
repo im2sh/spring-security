@@ -1,0 +1,35 @@
+package com.example.springsecurity.service;
+
+import java.util.Collection;
+import java.util.Iterator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+
+    /**
+     * 인증된 사용자의 아이디를 반환한다.
+     * @return
+     */
+    public String getAuthId(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    /**
+     * 인증된 사용자의 권한을 반환한다.
+     * @return
+     */
+    public String getAuthRole(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+        return auth.getAuthority();
+    }
+
+}
