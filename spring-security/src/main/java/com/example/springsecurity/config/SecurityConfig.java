@@ -2,6 +2,8 @@ package com.example.springsecurity.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +22,14 @@ public class SecurityConfig {
     }
 
     @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_C > ROLE_B\n" +
+                 "ROLE_B > ROLE_A");
+        return roleHierarchy;
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         /**
          requestMatchers("/", "/login").permitAll(): "/" 및 "/login" 요청은 모든 사용자에게 허용된다.
@@ -35,6 +45,18 @@ public class SecurityConfig {
                         .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 );
+
+        /**
+         * Role Hierarchy 테스트
+         */
+//        http
+//                .authorizeHttpRequests((auth) -> auth
+//                        .requestMatchers("/login").permitAll()
+//                        .requestMatchers("/").hasAnyRole("A")
+//                        .requestMatchers("/manager").hasAnyRole("B")
+//                        .requestMatchers("/admin").hasAnyRole("C")
+//                        .anyRequest().authenticated()
+//                );
 
         /**
          http.formLogin((auth) -> auth: 이 부분은 폼 기반 로그인을 설정하는 메서드를 호출한다.
@@ -58,7 +80,7 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true")
                         .permitAll());
 
-        // http.csrf((auth) -> auth.disable());
+
 
         /**
          * maximumSessions(1): 하나의 아이디에 대한 다중 로그인 허용 개수
@@ -85,26 +107,26 @@ public class SecurityConfig {
 
     /**
      * InmemoryUserDetailsManager를 사용하여 사용자 정보를 메모리에 저장한다.
-     * 직접 생성한 User와 구분짓기 위해 org.springframework.security.core.userdetails의 경로를 명시
+     * 생성한 User와 구분짓기 위해 org.springframework.security.core.userdetails의 경로를 명시한다.
      * @return
      */
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-
-        UserDetails user1 = org.springframework.security.core.userdetails.User.builder()
-                .username("user1")
-                .password(bCryptPasswordEncoder().encode("1234"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails user2 = org.springframework.security.core.userdetails.User.builder()
-                .username("user2")
-                .password(bCryptPasswordEncoder().encode("1234"))
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//
+//        UserDetails user1 = org.springframework.security.core.userdetails.User.builder()
+//                .username("user1")
+//                .password(bCryptPasswordEncoder().encode("1234"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails user2 = org.springframework.security.core.userdetails.User.builder()
+//                .username("user2")
+//                .password(bCryptPasswordEncoder().encode("1234"))
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user1, user2);
+//    }
 
 }
