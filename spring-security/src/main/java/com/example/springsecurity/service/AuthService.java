@@ -8,6 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+/**
+ * 사용자가 로그인을 진행하면 사용자 정보는 SecurityContextHolder에 의해서 서버 세션에 관리된다.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
